@@ -3,7 +3,18 @@ public class Main {
 
 
         Zoológico zoológico = new Zoológico();
-        Leao CARLOS = new leao()
+        Leao mufasa = new Leao("mufasa", 8);
+        Aguia falcao = new Aguia("Falcão", 3);
+        Serpente jarara = new Serpente("jarara", 8);
+
+
+
+        zoológico.adicionarAnimal(mufasa);
+        zoológico.adicionarAnimal(falcao);
+        zoológico.adicionarAnimal(jarara);
+
+        zoológico.listarAnimais();
+
 
     }
 }
