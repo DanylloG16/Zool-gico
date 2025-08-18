@@ -26,7 +26,7 @@ public class Zoologico {
         System.out.println("-----animais do zoologico------");
         // passa por cada animal guardado na lista animal
         for(Animal animal : this.animais){
-            System.out.println("nome" + animal.getNome() + ", Idade" + animal.getIdade());
+            System.out.println("nome=" + animal.getNome() + ", Idade=" + animal.getIdade());
             // faz o som baseado no anima que for indicado
             animal.emitirSom();
         }

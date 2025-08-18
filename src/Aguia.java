@@ -1,7 +1,8 @@
 //nossa clase herda os comportamentos da classe animal e "é capaz de" voar pois ele é uma ave assim implementando/assinando o contrato da interface Voavel.
 
 public class Aguia extends Animal implements Voavel {
-    public Aguia(String nome, int idade){
+    public Aguia
+            (String nome, int idade){
         super (nome, idade);
     }
 

@@ -4,57 +4,19 @@ public class Main {
 
     public static void main(String[] args) {
 
-
+        //  Cria o objeto da lógica de negócio.
+        // é o cerebro do nosso programa, guarda a lista de animais , adiciona os animais, faz todos animais emitirem sons, identifica quais animais podem voar
+        // Ele não sabe nada sobre menus, opções ou o que o usuário digita. Ele só executa as ordens que recebe.
         Zoologico zoologico = new Zoologico();
 
-        //método auxiliar que está declarado FORA do main.
-        popularZoologico(zoologico);
+        //  Cria o objeto da interface do usuário, passando o zoológico para ele.
+        // estamos conectando nossa UI com o nosso zoologico, é como usar um controle para controlar uma tv, ao inves de criarmos uma regra de negocio nova para o zoologicoui, usamos a logica que já existe
+        ZoologicoUI ui = new ZoologicoUI(zoologico);
+        // É ele que vai exibir o menu, esperar o usuário digitar, e quando o usuário escolher uma opção (como "Listar animais") o ui vai "apertar o botão" correspondente no zoologico chamando o método listarAnimais
+        //  Inicia a interface do usuário. A partir daqui, a classe UI assume o controle.
+        ui.iniciar();
 
-        Scanner scanner = new Scanner(System.in);
-
-        //aqui temos o menu que recebe a entrada dos dados e tratamos essa entrada com o switch case, uma estrutura de decisão.
-        while (true) {
-            System.out.println("========= MENU DO ZOOLÓGICO =========");
-            System.out.println("1: Listar todos os animais");
-            System.out.println("2: Iniciar Show Aéreo (apenas voadores)");
-            System.out.println("3: Sair do programa");
-            System.out.print("Escolha uma opção: ");
-
-            int opcao = scanner.nextInt();
-
-            switch (opcao) {
-                case 1:
-                    zoologico.listarAnimais();
-                    break;
-                case 2:
-                    zoologico.iniciarShowAereo();
-                    break;
-                case 3:
-                    System.out.println("Obrigado por visitar o zoológico!");
-                    scanner.close();
-                    return;
-                default:
-                    System.out.println("Opção inválida! Tente novamente.");
-                    break;
-            }
-            System.out.println();
-        }
     }
 
-
-    //metodo responsavel por instanciar os objetos e criar os animais
-    private static void popularZoologico(Zoologico zoologico) {
-        System.out.println("Populando o zoológico com os animais iniciais...");
-
-        Leao mufasa = new Leao("Mufasa", 8);
-        Aguia falcao = new Aguia("Falcão", 3);
-        Serpente jarara = new Serpente("Jarara", 2);
-
-        zoologico.adicionarAnimal(mufasa);
-        zoologico.adicionarAnimal(falcao);
-        zoologico.adicionarAnimal(jarara);
-
-        System.out.println("--------------------------------------------------");
-    }
 }
 //a
