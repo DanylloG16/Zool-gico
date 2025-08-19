@@ -1,4 +1,6 @@
-public class Leao extends Animal{
+package br.com.meuzoo.model;
+
+public class Leao extends Animal {
 
 
 

@@ -1,11 +1,16 @@
-// A única responsabilidade dela será gerenciar a tela, o menu e a comunicação com o usuário.
+package br.com.meuzoo.ui;// A única responsabilidade dela será gerenciar a tela, o menu e a comunicação com o usuário.
+
+import br.com.meuzoo.core.Zoologico;
+import br.com.meuzoo.model.Aguia;
+import br.com.meuzoo.model.Leao;
+import br.com.meuzoo.model.Serpente;
 
 import java.util.Scanner;
 
 public class ZoologicoUI {
 
-    private Zoologico zoologico;
-    private Scanner scanner;
+    private final Zoologico zoologico;
+    private final Scanner scanner;
 
 
     public ZoologicoUI(Zoologico zoologico){
@@ -16,7 +21,6 @@ public class ZoologicoUI {
 
     // metodo responsavel por "inicar" toda nosso menu
     public void iniciar(){
-        popularZoologico(zoologico);
         while (true){
             exibirMenu();
             int opcao = lerOpcao();
@@ -43,6 +47,8 @@ public class ZoologicoUI {
                 zoologico.iniciarShowAereo();
                 break;
             case 3:
+                System.out.println("Salvando animais antes de fechar...");
+                zoologico.salvarAnimais();
                 System.out.println("Obrigado por visitar o zoológico!");
                 scanner.close(); // Fecha o scanner
                 break;
@@ -70,23 +76,11 @@ public class ZoologicoUI {
 
 
     // instancia os objetos e cria os animais usando o metodo adicionarAnimal
-    private void popularZoologico(Zoologico zoologico) {
-        System.out.println("Populando o zoológico com os animais iniciais...");
-
-        Leao mufasa = new Leao("Mufasa", 8);
-        Aguia falcao = new Aguia("Falcão", 3);
-        Serpente jarara = new Serpente("Jarara", 2);
-
-        this.zoologico.adicionarAnimal(mufasa);
-        this.zoologico.adicionarAnimal(falcao);
-        this.zoologico.adicionarAnimal(jarara);
-        System.out.println("--------------------------------------------------");
-    }
 
 
     // metodo que recebe os inputs do usuario e cria os animais de forma dinamica
     public void criarAnimalPeloUsuario(){
-        System.out.println("\n--- Adicionar Novo Animal ---");
+        System.out.println("\n--- Adicionar Novo br.com.meuzoo.model.Animal ---");
         System.out.print("Qual tipo de animal? (1-Leão, 2-Águia, 3-Serpente): ");
         int tipo = scanner.nextInt();
 

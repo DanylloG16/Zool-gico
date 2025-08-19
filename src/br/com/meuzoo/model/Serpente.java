@@ -1,3 +1,7 @@
+package br.com.meuzoo.model;
+
+import br.com.meuzoo.model.Animal;
+
 public class Serpente extends Animal {
 
     public Serpente(String nome, int idade){

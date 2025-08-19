@@ -1,3 +1,5 @@
+package br.com.meuzoo.model;
+
 public abstract class Animal {
 
     //variaveis que guardamos os valores
