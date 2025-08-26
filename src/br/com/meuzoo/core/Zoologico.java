@@ -9,9 +9,11 @@ import br.com.meuzoo.model.Aguia;
 import br.com.meuzoo.model.Leao;
 import br.com.meuzoo.model.Voavel;
 import br.com.meuzoo.model.Serpente;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 
 // a clase zoológico é uma composição, uma classe composta por outras, na logica um zoologico tem animais.
 
@@ -58,71 +60,101 @@ public class Zoologico {
         System.out.println("--- show aereo terminou! ---");
     }
 
-    public void salvarAnimais(){
-        //FileWriter cria o arquivo txt, se ele não existir ele cria,se existir ele prepara para ser sobrescrito.
-        //o prinwriter "envelopa" o file Whiter e nos da ferramentas mais sofisticadas.
-        // o try é responsavel por fechar todas as conexões, ele garante que assim que o bloco de codigo do try for executado, ele fechara automaticamente o writer
-    try(PrintWriter writer = new PrintWriter(new FileWriter("animais.txt"))) {
-        // passando por cada animal da lista
-        for (Animal animal : this.animais) {
-        //aqui verificamos se o animal é uma instancia das classes que herdam de "animal" e escrevemos a strig correta "LEAO","AGUIA"
+    public void salvarAnimais() {
+        String nomeArquivo = "animais.json";
+        StringBuilder jsonBuilder = new StringBuilder();
+        jsonBuilder.append("[\n");
+        for (int i = 0; i < this.animais.size(); i++) {
+            Animal animal = this.animais.get(i);
             String tipo = "";
             if (animal instanceof Leao) tipo = "LEAO";
             else if (animal instanceof Aguia) tipo = "AGUIA";
             else if (animal instanceof Serpente) tipo = "SERPENTE";
-            String linha = tipo + "," + animal.getNome() + "," + animal.getIdade();
-            // o writer pega a linha que montamos e escreve no arquivo, pulando para a linha seguinte separando por virgulas
-            writer.println(linha);
+            jsonBuilder.append("\t{\n");
+            jsonBuilder.append("\t\t\"tipo\": \"" + tipo + "\",\n");
+            jsonBuilder.append("\t\t\"nome\": \"" + animal.getNome() + "\",\n");
+            jsonBuilder.append("\t\t\"idade\": " + animal.getIdade() + "\n");
+            jsonBuilder.append("\t}");
+            //  aqui eu add uma vírgula depois do objeto caso n for o último da lista
+            if (i < this.animais.size() - 1) {
+                jsonBuilder.append(",\n");
+            } else {
+                jsonBuilder.append("\n");
+            }
         }
-            System.out.println("Animais salvos com sucesso!");
-        // aqui criamos uma exceção para caso aconteça algum erro no salvamento e o catch é o nosso plano de contigencia
+        jsonBuilder.append("]");
+        try (PrintWriter writer = new PrintWriter(new FileWriter(nomeArquivo))) {
+            writer.print(jsonBuilder.toString());
+            System.out.println("Animais salvos com sucesso");
         } catch (IOException e) {
-        // IOException pode acontecer se não tivermos permissão para escrever o arquivo, por exemplo.
-        System.err.println("Erro ao salvar os animais: " + e.getMessage());
-         }
+            System.err.println("Erro ao salvar os animais " + e.getMessage());
+        }
     }
 
 
-    public void carregarAnimais() {
-        // aqui criamos uma conexão com nosso arquivo que criamos para ler o arquivo usando filereader
-        //"envelopamos" o filereader com o bufferedreader
-        // o try garante que a linha tudo seja finalizado apos a excecução do bloco de codigo inteiro dentro do try
-        try (BufferedReader reader = new BufferedReader(new FileReader("animais.txt"))) {
-            String linha;
-            System.out.println("Carregando animais existentes...");
-            // Lê o arquivo linha por linha
-            while ((linha = reader.readLine()) != null) {
-                String[] partes = linha.split(","); // Divide a linha pela vírgula
-                if (partes.length == 3) {
-                    String tipo = partes[0];
-                    String nome = partes[1];
-                    int idade = Integer.parseInt(partes[2]); // Converte o texto da idade para número
+    // No arquivo Zoologico.java
+// Não se esqueça das importações no topo do arquivo!
 
-                    Animal animal = null;
-                    // Usa o 'switch' para criar o objeto do tipo correto
-                    switch (tipo) {
-                        case "LEAO":
-                            animal = new Leao(nome, idade);
-                            break;
-                        case "AGUIA":
-                            animal = new Aguia(nome, idade);
-                            break;
-                        case "SERPENTE":
-                            animal = new Serpente(nome, idade);
-                            break;
-                    }
-                    if (animal != null) {
-                        this.animais.add(animal); // Adiciona o animal carregado à lista
+
+    public void carregarAnimais() {
+        String nomeArquivo = "animais.json";
+        File arquivo = new File(nomeArquivo);
+        if (!arquivo.exists()) {
+            System.out.println("Arquivo 'animais.json' não encontrado. Começando um novo zoológico.");
+            return;
+        }
+        try {
+            String jsonCompleto = new String(Files.readAllBytes(Paths.get(nomeArquivo)));
+
+            if (jsonCompleto.trim().isEmpty() || jsonCompleto.trim().equals("[]")) {
+                return;
+            }
+            String conteudo = jsonCompleto.replace("\n", "").replace("\t", "");
+            conteudo = conteudo.substring(1, conteudo.length() - 1).trim();
+
+            String[] objetosAnimais = conteudo.split("\\},\\{");
+            for (String animalJson : objetosAnimais) {
+                String tipo = "";
+                String nome = "";
+                int idade = 0;
+                animalJson = animalJson.replace("{", "").replace("}", "").trim();
+
+                String[] atributos = animalJson.split(",");
+                for (String atributo : atributos) {
+                    String[] par = atributo.split(":");
+                    String chave = par[0].trim().replace("\"", "");
+                    String valor = par[1].trim().replace("\"", "");
+
+                    if (chave.equals("tipo")) {
+                        tipo = valor;
+                    } else if (chave.equals("nome")) {
+                        nome = valor;
+                    } else if (chave.equals("idade")) {
+                        idade = Integer.parseInt(valor);
                     }
                 }
+                Animal animal = null;
+                switch (tipo) {
+                    case "LEAO":
+                        animal = new Leao(nome, idade);
+                        break;
+                    case "AGUIA":
+                        animal = new Aguia(nome, idade);
+                        break;
+                    case "SERPENTE":
+                        animal = new Serpente(nome, idade);
+                        break;
+                }
+                if (animal != null) {
+                    this.animais.add(animal);
+                }
             }
-            System.out.println("Animais carregados.");
-        } catch (IOException e) {
-            // Se o arquivo ainda não existe, isso é normal na primeira vez que rodamos.
-            System.out.println("Nenhum arquivo de animais encontrado. Começando um novo zoológico.");
-        } catch (NumberFormatException e) {
-            // Caso a idade no arquivo não seja um número válido.
-            System.err.println("Erro ao ler a idade de um animal no arquivo.");
+
+            System.out.println("Animais carregados do arquivo JSON.");
+
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar o arquivo : " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
